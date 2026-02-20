@@ -1,0 +1,1536 @@
+echo "# Adpool-Main." >> README.md
+git init
+git add README.md
+git commit -m "first commit"
+git branch -M main
+git remote add origin https://github.com/ndubzz/Adpool-Main..git
+git push -u origin main
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AdPool — Fund Ads. Earn Returns.</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+:root {
+–bg: #060910;
+–surface: #0c1018;
+–surface2: #111722;
+–surface3: #161d2a;
+–border: #1e2736;
+–border2: #253040;
+–blue: #2563eb;
+–blue-light: #3b82f6;
+–blue-dim: rgba(37,99,235,0.12);
+–blue-glow: rgba(37,99,235,0.2);
+–green: #10b981;
+–green-dim: rgba(16,185,129,0.1);
+–red: #ef4444;
+–text: #f1f5f9;
+–text2: #94a3b8;
+–text3: #4b6280;
+–gold: #f59e0b;
+–mono: ‘IBM Plex Mono’, monospace;
+–sans: ‘Inter’, sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+font-family: var(–sans);
+background: var(–bg);
+color: var(–text);
+overflow-x: hidden;
+line-height: 1.5;
+}
+
+/* grid bg */
+body::before {
+content: ‘’;
+position: fixed;
+inset: 0;
+background-image: linear-gradient(var(–border) 1px, transparent 1px), linear-gradient(90deg, var(–border) 1px, transparent 1px);
+background-size: 48px 48px;
+opacity: 0.35;
+pointer-events: none;
+z-index: 0;
+}
+
+/* glow orbs */
+.orb-1 { position: fixed; width: 800px; height: 800px; border-radius: 50%; background: radial-gradient(circle, rgba(37,99,235,0.07) 0%, transparent 65%); top: -200px; right: -200px; pointer-events: none; z-index: 0; }
+.orb-2 { position: fixed; width: 600px; height: 600px; border-radius: 50%; background: radial-gradient(circle, rgba(16,185,129,0.04) 0%, transparent 65%); bottom: -100px; left: -150px; pointer-events: none; z-index: 0; }
+
+/* –– NAV –– */
+nav {
+position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+height: 60px;
+display: flex; align-items: center; justify-content: space-between;
+padding: 0 24px;
+background: rgba(6,9,16,0.92);
+backdrop-filter: blur(20px);
+border-bottom: 1px solid var(–border);
+}
+
+.nav-logo {
+display: flex; align-items: center; gap: 8px;
+font-size: 17px; font-weight: 700; letter-spacing: -0.4px;
+color: var(–text); text-decoration: none; cursor: pointer;
+}
+
+.nav-dot {
+width: 7px; height: 7px; border-radius: 50%;
+background: var(–blue-light);
+box-shadow: 0 0 10px var(–blue-light);
+animation: blink 2s ease-in-out infinite;
+}
+
+@keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
+
+.nav-tabs {
+display: flex; gap: 2px;
+background: var(–surface); border: 1px solid var(–border);
+border-radius: 8px; padding: 3px;
+}
+
+.nav-tab {
+padding: 6px 16px; border-radius: 6px;
+font-size: 13px; font-weight: 500; color: var(–text2);
+cursor: pointer; border: none; background: transparent;
+transition: all 0.15s; font-family: var(–sans);
+}
+.nav-tab:hover { color: var(–text); }
+.nav-tab.active { background: var(–surface3); color: var(–text); border: 1px solid var(–border2); }
+
+.nav-right { display: flex; gap: 8px; align-items: center; }
+
+/* –– BUTTONS –– */
+.btn {
+padding: 8px 16px; border-radius: 7px;
+font-size: 13px; font-weight: 600; cursor: pointer;
+border: none; transition: all 0.15s;
+font-family: var(–sans); display: inline-flex; align-items: center; gap: 6px;
+}
+.btn-ghost { background: transparent; color: var(–text2); border: 1px solid var(–border2); }
+.btn-ghost:hover { color: var(–text); border-color: var(–text3); background: var(–surface2); }
+.btn-blue { background: var(–blue); color: #fff; }
+.btn-blue:hover { background: var(–blue-light); box-shadow: 0 0 20px var(–blue-glow); transform: translateY(-1px); }
+.btn-outline-blue { background: transparent; color: var(–blue-light); border: 1px solid rgba(59,130,246,0.35); }
+.btn-outline-blue:hover { background: var(–blue-dim); }
+.btn-lg { padding: 11px 24px; font-size: 14px; border-radius: 8px; }
+.btn-full { width: 100%; justify-content: center; padding: 12px; }
+.btn-green { background: var(–green); color: #fff; }
+.btn-green:hover { background: #059669; }
+
+/* –– PAGES –– */
+.page { display: none; position: relative; z-index: 1; }
+.page.active { display: block; }
+
+/* –– TICKER –– */
+.ticker-bar {
+position: relative; z-index: 1;
+border-bottom: 1px solid var(–border);
+background: var(–surface);
+padding: 9px 0; overflow: hidden;
+margin-top: 60px;
+}
+.ticker-track {
+display: flex; gap: 48px;
+animation: scroll-ticker 28s linear infinite;
+white-space: nowrap; width: max-content;
+}
+.ticker-item {
+display: flex; align-items: center; gap: 8px;
+font-family: var(–mono); font-size: 11.5px; color: var(–text2);
+flex-shrink: 0;
+}
+.t-name { color: var(–text); font-weight: 500; }
+.t-up { color: var(–green); }
+.t-down { color: var(–red); }
+.t-sep { color: var(–text3); }
+@keyframes scroll-ticker { from{transform:translateX(0);} to{transform:translateX(-50%);} }
+
+/* –– HERO –– */
+.hero {
+min-height: calc(100vh - 60px);
+display: flex; flex-direction: column; align-items: center; justify-content: center;
+text-align: center; padding: 80px 24px 60px;
+position: relative; z-index: 1;
+}
+
+.hero-chip {
+display: inline-flex; align-items: center; gap: 6px;
+padding: 5px 12px; border-radius: 100px;
+border: 1px solid rgba(59,130,246,0.3);
+background: rgba(37,99,235,0.08);
+font-size: 11px; font-family: var(–mono);
+color: var(–blue-light); letter-spacing: 0.8px;
+text-transform: uppercase; margin-bottom: 28px;
+animation: fadeUp 0.5s ease both;
+}
+.hero-chip::before { content:’’; width:6px; height:6px; border-radius:50%; background:var(–blue-light); animation:blink 1.5s infinite; }
+
+.hero h1 {
+font-size: clamp(44px, 7vw, 88px);
+font-weight: 700; letter-spacing: -3px; line-height: 1;
+animation: fadeUp 0.6s ease 0.05s both;
+}
+.hero h1 span { color: var(–blue-light); }
+
+.hero-sub {
+margin-top: 20px; max-width: 480px;
+font-size: 16px; color: var(–text2); line-height: 1.65; font-weight: 400;
+animation: fadeUp 0.6s ease 0.1s both;
+}
+
+.hero-btns {
+margin-top: 32px; display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;
+animation: fadeUp 0.6s ease 0.15s both;
+}
+
+.hero-stats {
+margin-top: 64px;
+display: flex; gap: 0;
+border: 1px solid var(–border);
+border-radius: 12px; overflow: hidden;
+background: var(–surface);
+animation: fadeUp 0.6s ease 0.2s both;
+}
+.hero-stat {
+padding: 20px 32px; text-align: center;
+border-right: 1px solid var(–border);
+}
+.hero-stat:last-child { border-right: none; }
+.hero-stat-val { font-size: 26px; font-weight: 700; letter-spacing: -0.5px; font-family: var(–mono); }
+.hero-stat-val span { color: var(–blue-light); }
+.hero-stat-label { font-size: 11px; color: var(–text3); margin-top: 3px; text-transform: uppercase; letter-spacing: 0.6px; }
+
+@keyframes fadeUp { from{opacity:0;transform:translateY(20px);} to{opacity:1;transform:none;} }
+
+/* –– SECTION –– */
+.section { padding: 72px 24px; max-width: 1100px; margin: 0 auto; position: relative; z-index: 1; }
+.section-label { font-family: var(–mono); font-size: 11px; color: var(–blue-light); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 10px; }
+.section-title { font-size: clamp(26px, 3.5vw, 42px); font-weight: 700; letter-spacing: -1.5px; line-height: 1.1; margin-bottom: 40px; max-width: 500px; }
+.muted { color: var(–text2); font-size: 14px; line-height: 1.7; }
+
+/* –– DIVIDER –– */
+.divider { border: none; border-top: 1px solid var(–border); position: relative; z-index: 1; }
+
+/* –– STEPS –– */
+.steps-grid {
+display: grid; grid-template-columns: repeat(3, 1fr);
+border: 1px solid var(–border); border-radius: 12px; overflow: hidden;
+}
+.step-card {
+padding: 32px 28px; background: var(–surface);
+border-right: 1px solid var(–border);
+transition: background 0.2s;
+}
+.step-card:last-child { border-right: none; }
+.step-card:hover { background: var(–surface2); }
+.step-num { font-family: var(–mono); font-size: 11px; color: var(–blue-light); letter-spacing: 1px; margin-bottom: 16px; }
+.step-icon { font-size: 24px; margin-bottom: 14px; }
+.step-title { font-size: 16px; font-weight: 600; letter-spacing: -0.3px; margin-bottom: 10px; }
+.step-desc { font-size: 13px; color: var(–text2); line-height: 1.7; }
+
+/* –– CAMPAIGN CARD –– */
+.campaigns-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+
+.card {
+background: var(–surface);
+border: 1px solid var(–border);
+border-radius: 10px; padding: 20px;
+cursor: pointer; transition: all 0.2s;
+position: relative; overflow: hidden;
+}
+.card::after {
+content:’’; position:absolute; top:0;left:0;right:0; height:2px;
+background: linear-gradient(90deg, var(–blue), var(–blue-light));
+transform: scaleX(0); transform-origin: left; transition: transform 0.2s;
+}
+.card:hover { background: var(–surface2); border-color: var(–border2); transform: translateY(-2px); box-shadow: 0 12px 32px rgba(0,0,0,0.4); }
+.card:hover::after { transform: scaleX(1); }
+
+.card-premium::before {
+content: ‘★ PREMIUM’;
+position: absolute; top: 12px; right: 12px;
+font-family: var(–mono); font-size: 9px; color: var(–gold);
+background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.25);
+padding: 2px 7px; border-radius: 4px; letter-spacing: 0.8px;
+}
+
+.card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; }
+.brand-row { display: flex; align-items: center; gap: 10px; }
+.brand-ico { width: 38px; height: 38px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+.brand-name { font-size: 14px; font-weight: 600; letter-spacing: -0.2px; }
+.brand-cat { font-size: 11px; color: var(–text3); font-family: var(–mono); margin-top: 2px; }
+
+.roi-pill {
+background: var(–green-dim); border: 1px solid rgba(16,185,129,0.2);
+color: var(–green); font-family: var(–mono); font-size: 12px;
+padding: 3px 9px; border-radius: 5px; flex-shrink: 0;
+}
+
+.prog-wrap { margin: 14px 0 10px; }
+.prog-labels { display: flex; justify-content: space-between; font-family: var(–mono); font-size: 10.5px; color: var(–text3); margin-bottom: 6px; }
+.prog-track { height: 3px; background: rgba(255,255,255,0.05); border-radius: 2px; overflow: hidden; }
+.prog-fill { height: 100%; background: linear-gradient(90deg, var(–blue), var(–blue-light)); border-radius: 2px; transition: width 1s ease; }
+
+.card-meta { display: flex; justify-content: space-between; padding-top: 12px; border-top: 1px solid var(–border); }
+.meta-col { text-align: center; }
+.meta-val { font-size: 14px; font-weight: 600; font-family: var(–mono); letter-spacing: -0.3px; }
+.meta-lbl { font-size: 10px; color: var(–text3); margin-top: 2px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+.launch-row {
+display: flex; align-items: center; gap: 6px;
+font-family: var(–mono); font-size: 11px; color: var(–text3);
+margin-top: 10px;
+}
+.launch-dot { width: 5px; height: 5px; border-radius: 50%; background: var(–blue-light); animation: blink 1.2s infinite; flex-shrink: 0; }
+
+.fund-btn {
+margin-top: 12px; width: 100%;
+padding: 10px; border-radius: 7px;
+border: 1px solid rgba(37,99,235,0.4);
+background: transparent; color: var(–blue-light);
+font-family: var(–sans); font-size: 13px; font-weight: 600;
+cursor: pointer; transition: all 0.15s;
+}
+.fund-btn:hover { background: var(–blue); border-color: var(–blue); color: white; box-shadow: 0 4px 16px var(–blue-glow); }
+
+/* –– CALC –– */
+.calc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; }
+.calc-box { background: var(–surface); border: 1px solid var(–border); border-radius: 12px; padding: 28px; }
+.calc-row { margin-bottom: 14px; }
+.calc-row label { display: block; font-family: var(–mono); font-size: 10px; color: var(–text3); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 6px; }
+.inp-wrap { position: relative; }
+.inp-wrap .prefix { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(–text3); font-family: var(–mono); font-size: 13px; pointer-events: none; }
+.inp-wrap input { width: 100%; padding: 9px 12px 9px 26px; background: var(–surface2); border: 1px solid var(–border2); border-radius: 7px; color: var(–text); font-family: var(–mono); font-size: 13px; outline: none; transition: border-color 0.15s; }
+.inp-wrap input:focus { border-color: var(–blue); }
+.calc-hr { height: 1px; background: var(–border); margin: 18px 0; }
+.calc-result-row { display: flex; justify-content: space-between; align-items: center; padding: 7px 0; font-size: 13px; color: var(–text2); }
+.calc-result-row.big { font-size: 15px; font-weight: 600; color: var(–text); padding: 12px 0; }
+.c-mono { font-family: var(–mono); color: var(–text); }
+.c-blue { color: var(–blue-light) !important; font-size: 22px !important; }
+.c-green { color: var(–green) !important; }
+
+/* –– PAYOUT SPLIT VIZ –– */
+.split-bar { display: flex; height: 10px; border-radius: 100px; overflow: hidden; gap: 2px; margin: 20px 0; }
+.split-seg { border-radius: 100px; transition: width 0.5s ease; }
+.split-legend { display: flex; gap: 20px; flex-wrap: wrap; }
+.legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(–text2); }
+.legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+/* –– FOR BRANDS –– */
+.benefit-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.benefit-card { background: var(–surface); border: 1px solid var(–border); border-radius: 10px; padding: 24px; transition: all 0.2s; }
+.benefit-card:hover { background: var(–surface2); border-color: var(–border2); }
+.benefit-ico { font-size: 22px; margin-bottom: 12px; }
+.benefit-title { font-size: 15px; font-weight: 600; letter-spacing: -0.3px; margin-bottom: 8px; }
+.benefit-desc { font-size: 13px; color: var(–text2); line-height: 1.65; }
+
+/* –– BRAND FORM –– */
+.form-card { background: var(–surface); border: 1px solid var(–border); border-radius: 12px; padding: 32px; max-width: 660px; }
+.form-section-hd { font-size: 13px; font-weight: 600; color: var(–text2); font-family: var(–mono); letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 18px; padding-bottom: 12px; border-bottom: 1px solid var(–border); }
+.fg { margin-bottom: 14px; }
+.fg label { display: block; font-family: var(–mono); font-size: 10px; color: var(–text3); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 5px; }
+.fi { width: 100%; padding: 10px 13px; background: var(–surface2); border: 1px solid var(–border2); border-radius: 7px; color: var(–text); font-family: var(–sans); font-size: 13px; outline: none; transition: border-color 0.15s; }
+.fi:focus { border-color: var(–blue); }
+textarea.fi { min-height: 90px; resize: vertical; }
+select.fi { appearance: none; }
+.fg-hint { font-size: 11px; color: var(–text3); font-family: var(–mono); margin-top: 4px; }
+.fg-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.split-preview { background: var(–blue-dim); border: 1px solid rgba(37,99,235,0.25); border-radius: 8px; padding: 16px; margin: 20px 0; display: flex; gap: 24px; flex-wrap: wrap; font-size: 12px; color: var(–text2); }
+.split-preview strong { color: var(–text); }
+
+/* –– DASHBOARD –– */
+.dash-layout { display: grid; grid-template-columns: 240px 1fr; gap: 20px; max-width: 1100px; margin: 0 auto; padding: 80px 24px 60px; position: relative; z-index: 1; }
+
+.sidebar { background: var(–surface); border: 1px solid var(–border); border-radius: 12px; padding: 20px; height: fit-content; position: sticky; top: 80px; }
+.wallet { background: linear-gradient(135deg, var(–blue) 0%, #1d4ed8 100%); border-radius: 10px; padding: 18px; margin-bottom: 20px; }
+.wallet-lbl { font-family: var(–mono); font-size: 10px; opacity: 0.75; letter-spacing: 0.8px; text-transform: uppercase; margin-bottom: 6px; }
+.wallet-bal { font-size: 26px; font-weight: 700; letter-spacing: -0.5px; font-family: var(–mono); margin-bottom: 14px; }
+.wallet-btns { display: flex; gap: 6px; }
+.wallet-btn { flex: 1; padding: 7px; border: 1px solid rgba(255,255,255,0.25); border-radius: 6px; background: rgba(255,255,255,0.1); color: white; font-family: var(–sans); font-size: 11px; font-weight: 600; cursor: pointer; transition: background 0.15s; }
+.wallet-btn:hover { background: rgba(255,255,255,0.2); }
+
+.sb-label { font-family: var(–mono); font-size: 9px; color: var(–text3); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 8px; }
+.sb-nav { display: flex; flex-direction: column; gap: 2px; margin-bottom: 20px; }
+.sb-link { padding: 8px 11px; border-radius: 7px; color: var(–text2); font-size: 13px; font-weight: 500; cursor: pointer; border: none; background: transparent; text-align: left; font-family: var(–sans); display: flex; align-items: center; gap: 8px; transition: all 0.15s; }
+.sb-link:hover { background: var(–surface2); color: var(–text); }
+.sb-link.active { background: var(–surface3); color: var(–text); border: 1px solid var(–border2); }
+
+.sb-perf { display: flex; flex-direction: column; gap: 8px; }
+.sb-perf-row { display: flex; justify-content: space-between; font-size: 12px; color: var(–text2); }
+.sb-perf-val { font-family: var(–mono); font-weight: 500; }
+.sb-perf-val.up { color: var(–green); }
+
+.dash-main { }
+
+.stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
+.stat-card { background: var(–surface); border: 1px solid var(–border); border-radius: 10px; padding: 18px; }
+.sc-label { font-family: var(–mono); font-size: 9px; color: var(–text3); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; }
+.sc-val { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; font-family: var(–mono); }
+.sc-sub { font-size: 11px; color: var(–text3); margin-top: 3px; }
+.sc-sub.up { color: var(–green); }
+
+.premium-banner {
+background: linear-gradient(135deg, rgba(245,158,11,0.08), rgba(37,99,235,0.08));
+border: 1px solid rgba(245,158,11,0.2); border-radius: 10px;
+padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; gap: 12px;
+margin-bottom: 20px; flex-wrap: wrap;
+}
+.pb-text h4 { font-size: 14px; font-weight: 600; color: var(–gold); margin-bottom: 3px; }
+.pb-text p { font-size: 12px; color: var(–text2); }
+
+.table-wrap { background: var(–surface); border: 1px solid var(–border); border-radius: 10px; overflow: hidden; margin-bottom: 20px; }
+.table-head { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1fr; padding: 10px 16px; background: var(–surface2); border-bottom: 1px solid var(–border); }
+.th { font-family: var(–mono); font-size: 9px; color: var(–text3); letter-spacing: 1px; text-transform: uppercase; }
+.table-row { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1fr; padding: 13px 16px; border-bottom: 1px solid var(–border); align-items: center; transition: background 0.15s; }
+.table-row:last-child { border-bottom: none; }
+.table-row:hover { background: var(–surface2); }
+.t-brand { display: flex; align-items: center; gap: 10px; }
+.t-ico { width: 30px; height: 30px; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+.t-bname { font-size: 13px; font-weight: 600; }
+.t-bcat { font-size: 10px; color: var(–text3); font-family: var(–mono); }
+.t-val { font-family: var(–mono); font-size: 12px; color: var(–text2); }
+.t-val.up { color: var(–green); }
+.badge { display: inline-flex; padding: 2px 7px; border-radius: 4px; font-family: var(–mono); font-size: 9px; letter-spacing: 0.5px; text-transform: uppercase; }
+.badge-live { background: rgba(16,185,129,0.1); color: var(–green); border: 1px solid rgba(16,185,129,0.2); }
+.badge-pending { background: var(–blue-dim); color: var(–blue-light); border: 1px solid rgba(59,130,246,0.25); }
+
+.activity-wrap { background: var(–surface); border: 1px solid var(–border); border-radius: 10px; overflow: hidden; }
+.activity-item { display: flex; align-items: center; justify-content: space-between; padding: 13px 16px; border-bottom: 1px solid var(–border); }
+.activity-item:last-child { border-bottom: none; }
+.act-left { display: flex; align-items: center; gap: 10px; }
+.act-ico { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+.act-ico.earn { background: var(–green-dim); }
+.act-ico.invest { background: var(–blue-dim); }
+.act-title { font-size: 13px; font-weight: 500; }
+.act-time { font-size: 10px; color: var(–text3); font-family: var(–mono); margin-top: 2px; }
+.act-amt { font-family: var(–mono); font-size: 13px; font-weight: 500; }
+.act-amt.earn { color: var(–green); }
+.act-amt.invest { color: var(–blue-light); }
+
+/* –– HOW IT WORKS PAGE –– */
+.hiw-steps { display: flex; flex-direction: column; gap: 0; }
+.hiw-step { display: flex; gap: 24px; padding: 28px 0; border-bottom: 1px solid var(–border); }
+.hiw-step:last-child { border-bottom: none; }
+.hiw-num { width: 44px; height: 44px; border-radius: 10px; background: var(–blue-dim); border: 1px solid rgba(37,99,235,0.25); display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 700; font-family: var(–mono); color: var(–blue-light); flex-shrink: 0; }
+.hiw-title { font-size: 17px; font-weight: 600; letter-spacing: -0.3px; margin-bottom: 8px; }
+.hiw-desc { font-size: 13px; color: var(–text2); line-height: 1.7; }
+
+.math-rows { display: flex; flex-direction: column; gap: 6px; font-family: var(–mono); font-size: 13px; }
+.math-row { display: flex; justify-content: space-between; padding: 10px 14px; background: var(–surface2); border-radius: 7px; color: var(–text2); }
+.math-row.highlight { background: var(–blue-dim); border: 1px solid rgba(37,99,235,0.2); color: var(–text); font-weight: 600; }
+.math-row.highlight span:last-child { color: var(–blue-light); }
+.math-row .up { color: var(–green); }
+
+.faq-item { border-bottom: 1px solid var(–border); }
+.faq-q { width: 100%; text-align: left; padding: 18px 0; background: none; border: none; color: var(–text); font-family: var(–sans); font-size: 14px; font-weight: 500; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+.faq-q:hover { color: var(–blue-light); }
+.faq-ico { font-size: 16px; color: var(–text3); flex-shrink: 0; transition: transform 0.2s; }
+.faq-a { display: none; padding-bottom: 18px; font-size: 13px; color: var(–text2); line-height: 1.75; }
+
+/* –– MARKETPLACE PAGE –– */
+.market-header { padding: 80px 24px 24px; max-width: 1100px; margin: 0 auto; position: relative; z-index: 1; }
+.filters { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 16px; }
+.filter-chip { padding: 6px 14px; border-radius: 100px; border: 1px solid var(–border2); background: transparent; color: var(–text3); font-size: 12px; font-family: var(–mono); cursor: pointer; transition: all 0.15s; }
+.filter-chip:hover { color: var(–text); border-color: var(–text3); }
+.filter-chip.active { background: var(–blue-dim); color: var(–blue-light); border-color: rgba(37,99,235,0.35); }
+.sort-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px; }
+.sort-bar select { padding: 7px 12px; background: var(–surface); border: 1px solid var(–border2); border-radius: 7px; color: var(–text); font-size: 12px; font-family: var(–mono); outline: none; cursor: pointer; }
+.search-input { padding: 8px 14px 8px 34px; background: var(–surface); border: 1px solid var(–border2); border-radius: 7px; color: var(–text); font-size: 13px; font-family: var(–sans); outline: none; transition: border-color 0.15s; width: 220px; }
+.search-input:focus { border-color: var(–blue); }
+.search-wrap { position: relative; }
+.search-ico { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); font-size: 14px; opacity: 0.4; }
+.count-label { font-family: var(–mono); font-size: 11px; color: var(–text3); }
+
+/* –– MODAL –– */
+.overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(8px); z-index: 2000; display: none; align-items: center; justify-content: center; padding: 16px; }
+.overlay.open { display: flex; }
+.modal { background: var(–surface); border: 1px solid var(–border2); border-radius: 14px; padding: 32px; width: 100%; max-width: 440px; position: relative; animation: modalIn 0.25s ease; max-height: 92vh; overflow-y: auto; }
+@keyframes modalIn { from{opacity:0;transform:translateY(16px) scale(0.97);} to{opacity:1;transform:none;} }
+.modal-x { position: absolute; top: 14px; right: 16px; background: none; border: none; color: var(–text3); font-size: 20px; cursor: pointer; line-height: 1; }
+.modal-x:hover { color: var(–text); }
+.modal-logo { font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 7px; margin-bottom: 20px; }
+.modal-title { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 4px; }
+.modal-sub { font-size: 13px; color: var(–text2); margin-bottom: 24px; }
+.modal-switch { text-align: center; margin-top: 18px; font-size: 12px; color: var(–text3); }
+.modal-switch a { color: var(–blue-light); cursor: pointer; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.mg { margin-bottom: 13px; }
+.mg label { display: block; font-family: var(–mono); font-size: 10px; color: var(–text3); letter-spacing: 0.8px; text-transform: uppercase; margin-bottom: 5px; }
+.mi { width: 100%; padding: 10px 13px; background: var(–surface2); border: 1px solid var(–border2); border-radius: 7px; color: var(–text); font-family: var(–sans); font-size: 13px; outline: none; transition: border-color 0.15s; }
+.mi:focus { border-color: var(–blue); }
+
+/* fund modal */
+.fund-preview-box { background: var(–surface2); border: 1px solid var(–border); border-radius: 8px; padding: 14px; margin-bottom: 18px; }
+.quick-amts { display: flex; gap: 6px; flex-wrap: wrap; margin: 8px 0 14px; }
+.qa-btn { padding: 6px 12px; border: 1px solid var(–border2); border-radius: 6px; background: transparent; color: var(–text3); font-family: var(–mono); font-size: 11px; cursor: pointer; transition: all 0.15s; }
+.qa-btn:hover { border-color: var(–blue-light); color: var(–blue-light); }
+.fund-breakdown { background: var(–surface2); border: 1px solid var(–border); border-radius: 8px; padding: 14px; margin-bottom: 14px; }
+.fbd-row { display: flex; justify-content: space-between; font-size: 12px; color: var(–text2); padding: 4px 0; }
+.fbd-row.hl { color: var(–text); font-weight: 600; border-top: 1px solid var(–border); padding-top: 10px; margin-top: 4px; }
+.fbd-row.hl span:last-child { color: var(–green); font-family: var(–mono); }
+
+/* –– TOAST –– */
+.toast { position: fixed; bottom: 24px; right: 24px; background: var(–surface2); border: 1px solid var(–border2); border-radius: 9px; padding: 13px 20px; font-size: 13px; z-index: 3000; transform: translateY(80px); opacity: 0; transition: all 0.25s; max-width: 300px; pointer-events: none; }
+.toast.show { transform: none; opacity: 1; }
+.toast.ok { border-color: rgba(16,185,129,0.35); color: var(–green); }
+.toast.err { border-color: rgba(239,68,68,0.35); color: var(–red); }
+
+/* –– FOOTER –– */
+footer {
+position: relative; z-index: 1;
+border-top: 1px solid var(–border);
+background: var(–surface);
+padding: 36px 24px;
+display: grid; grid-template-columns: 1fr 1fr 1fr auto;
+gap: 24px; max-width: 100%; align-items: start;
+}
+.footer-brand { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+.footer-tag { font-size: 11px; color: var(–text3); font-family: var(–mono); }
+.footer-col { display: flex; flex-direction: column; gap: 8px; }
+.footer-col a { font-size: 12px; color: var(–text3); text-decoration: none; cursor: pointer; transition: color 0.15s; font-family: var(–mono); }
+.footer-col a:hover { color: var(–text); }
+.footer-copy { font-size: 10px; color: var(–text3); font-family: var(–mono); line-height: 1.8; text-align: right; }
+
+/* –– CTA BAND –– */
+.cta-band { position: relative; z-index: 1; background: linear-gradient(135deg, rgba(37,99,235,0.08), rgba(16,185,129,0.04)); border-top: 1px solid var(–border); border-bottom: 1px solid var(–border); padding: 64px 24px; text-align: center; }
+.cta-band h2 { font-size: clamp(28px, 4vw, 48px); font-weight: 700; letter-spacing: -1.5px; margin-bottom: 12px; }
+.cta-band h2 span { color: var(–blue-light); }
+.cta-band p { color: var(–text2); font-size: 15px; margin-bottom: 28px; }
+.cta-row { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+.cta-input { padding: 11px 16px; background: var(–surface); border: 1px solid var(–border2); border-radius: 8px; color: var(–text); font-family: var(–sans); font-size: 13px; outline: none; width: 260px; transition: border-color 0.15s; }
+.cta-input:focus { border-color: var(–blue); }
+.cta-input::placeholder { color: var(–text3); }
+
+/* –– RESPONSIVE –– */
+@media(max-width:900px) {
+.campaigns-grid { grid-template-columns: 1fr 1fr; }
+.steps-grid { grid-template-columns: 1fr; }
+.step-card { border-right: none; border-bottom: 1px solid var(–border); }
+.calc-grid { grid-template-columns: 1fr; }
+.benefit-grid { grid-template-columns: 1fr 1fr; }
+.dash-layout { grid-template-columns: 1fr; }
+.sidebar { position: static; }
+.stats-row { grid-template-columns: 1fr 1fr; }
+footer { grid-template-columns: 1fr 1fr; }
+.hero-stats { flex-wrap: wrap; }
+.hero-stat { flex: 1; min-width: 120px; }
+}
+
+@media(max-width:600px) {
+nav { padding: 0 16px; }
+.nav-tabs { display: none; }
+.campaigns-grid { grid-template-columns: 1fr; }
+.benefit-grid { grid-template-columns: 1fr; }
+.stats-row { grid-template-columns: 1fr 1fr; }
+footer { grid-template-columns: 1fr; }
+.footer-copy { text-align: left; }
+.fg-grid { grid-template-columns: 1fr; }
+.form-row { grid-template-columns: 1fr; }
+.hero h1 { letter-spacing: -2px; }
+.table-head, .table-row { grid-template-columns: 2fr 1fr 1fr; }
+.table-head .th:nth-child(4), .table-head .th:nth-child(5),
+.table-row > *:nth-child(4), .table-row > *:nth-child(5) { display: none; }
+}
+</style>
+
+</head>
+<body>
+
+<div class="orb-1"></div>
+<div class="orb-2"></div>
+
+<!-- NAV -->
+
+<nav>
+  <div class="nav-logo" onclick="showPage('home')">
+    <div class="nav-dot"></div>AdPool
+  </div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showPage('home')">Home</button>
+    <button class="nav-tab" onclick="showPage('market')">Markets</button>
+    <button class="nav-tab" onclick="showPage('brands')">For Brands</button>
+    <button class="nav-tab" onclick="showPage('hiw')">How It Works</button>
+    <button class="nav-tab" onclick="showPage('dash')">Dashboard</button>
+  </div>
+  <div class="nav-right">
+    <button class="btn btn-ghost" onclick="openModal('loginModal')">Log In</button>
+    <button class="btn btn-blue" onclick="openModal('signupModal')">Get Started</button>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════ -->
+
+<!--  HOME PAGE                            -->
+
+<!-- ═══════════════════════════════════════ -->
+
+<div id="page-home" class="page active">
+  <!-- Ticker -->
+  <div class="ticker-bar">
+    <div class="ticker-track" id="tickerTrack">
+      <div class="ticker-item"><span class="t-name">TERRA APPAREL</span><span class="t-sep">·</span><span class="t-up">▲ 31.0%</span><span class="t-sep">·</span>$22,100 pooled</div>
+      <div class="ticker-item"><span class="t-name">NOVA SKIN</span><span class="t-sep">·</span><span class="t-up">▲ 22.4%</span><span class="t-sep">·</span>$14,200 pooled</div>
+      <div class="ticker-item"><span class="t-name">KIRA BEAUTY</span><span class="t-sep">·</span><span class="t-up">▲ 27.8%</span><span class="t-sep">·</span>$19,600 pooled</div>
+      <div class="ticker-item"><span class="t-name">FLUX COFFEE</span><span class="t-sep">·</span><span class="t-up">▲ 18.1%</span><span class="t-sep">·</span>$8,500 pooled</div>
+      <div class="ticker-item"><span class="t-name">BOLT TECH</span><span class="t-sep">·</span><span class="t-down">▼ 4.2%</span><span class="t-sep">·</span>$5,800 pooled</div>
+      <div class="ticker-item"><span class="t-name">MESA FOODS</span><span class="t-sep">·</span><span class="t-up">▲ 15.6%</span><span class="t-sep">·</span>$11,300 pooled</div>
+      <div class="ticker-item"><span class="t-name">AXIS SPORTS</span><span class="t-sep">·</span><span class="t-up">▲ 19.3%</span><span class="t-sep">·</span>$7,200 pooled</div>
+      <!-- dup for seamless loop -->
+      <div class="ticker-item"><span class="t-name">TERRA APPAREL</span><span class="t-sep">·</span><span class="t-up">▲ 31.0%</span><span class="t-sep">·</span>$22,100 pooled</div>
+      <div class="ticker-item"><span class="t-name">NOVA SKIN</span><span class="t-sep">·</span><span class="t-up">▲ 22.4%</span><span class="t-sep">·</span>$14,200 pooled</div>
+      <div class="ticker-item"><span class="t-name">KIRA BEAUTY</span><span class="t-sep">·</span><span class="t-up">▲ 27.8%</span><span class="t-sep">·</span>$19,600 pooled</div>
+      <div class="ticker-item"><span class="t-name">FLUX COFFEE</span><span class="t-sep">·</span><span class="t-up">▲ 18.1%</span><span class="t-sep">·</span>$8,500 pooled</div>
+      <div class="ticker-item"><span class="t-name">BOLT TECH</span><span class="t-sep">·</span><span class="t-down">▼ 4.2%</span><span class="t-sep">·</span>$5,800 pooled</div>
+      <div class="ticker-item"><span class="t-name">MESA FOODS</span><span class="t-sep">·</span><span class="t-up">▲ 15.6%</span><span class="t-sep">·</span>$11,300 pooled</div>
+      <div class="ticker-item"><span class="t-name">AXIS SPORTS</span><span class="t-sep">·</span><span class="t-up">▲ 19.3%</span><span class="t-sep">·</span>$7,200 pooled</div>
+    </div>
+  </div>
+
+  <!-- Hero -->
+
+  <div class="hero">
+    <div class="hero-chip">Now in Beta — Limited Early Access</div>
+    <h1>Fund Ads.<br><span>Earn Returns.</span></h1>
+    <p class="hero-sub">Invest in real ad campaigns from brands you believe in. Earn a percentage of every sale your dollars generate. Payouts are automatic.</p>
+    <div class="hero-btns">
+      <button class="btn btn-blue btn-lg" onclick="openModal('signupModal')">Start Investing Free</button>
+      <button class="btn btn-ghost btn-lg" onclick="showPage('brands')">List Your Brand →</button>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="hero-stat-val">$2.4<span>M</span></div><div class="hero-stat-label">Ad Spend Pooled</div></div>
+      <div class="hero-stat"><div class="hero-stat-val">31<span>%</span></div><div class="hero-stat-label">Avg Return</div></div>
+      <div class="hero-stat"><div class="hero-stat-val">340<span>+</span></div><div class="hero-stat-label">Campaigns</div></div>
+      <div class="hero-stat"><div class="hero-stat-val">12K<span>+</span></div><div class="hero-stat-label">Investors</div></div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- How it works -->
+
+  <div class="section">
+    <div class="section-label">// How It Works</div>
+    <h2 class="section-title">Three steps to your first return.</h2>
+    <div class="steps-grid">
+      <div class="step-card">
+        <div class="step-num">01 —</div>
+        <div class="step-icon">🎯</div>
+        <div class="step-title">Browse Campaigns</div>
+        <p class="step-desc">Explore vetted ad campaigns from real brands. See projected ROI, launch date, pool size, and revenue share before committing a dollar. Premium members get 48hr early access.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">02 —</div>
+        <div class="step-icon">💰</div>
+        <div class="step-title">Fund the Ad</div>
+        <p class="step-desc">Put in as little as $10. Your funds are held securely until the campaign's launch date. The pool closes on launch day and dollars go directly to running real Meta, TikTok, or Google ads.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">03 —</div>
+        <div class="step-icon">📈</div>
+        <div class="step-title">Collect Your Cut</div>
+        <p class="step-desc">Every sale tracked through the campaign's auto-generated link earns you a proportional share of 25% of total profit. Payout hits your wallet automatically when the campaign closes.</p>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- Live campaigns preview -->
+
+  <div class="section">
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:28px;">
+      <div>
+        <div class="section-label">// Live Markets</div>
+        <h2 class="section-title" style="margin-bottom:0">Active campaigns</h2>
+      </div>
+      <button class="btn btn-ghost" onclick="showPage('market')">View All →</button>
+    </div>
+    <div class="campaigns-grid" id="homeCampaigns"></div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- Calculator -->
+
+  <div class="section">
+    <div class="calc-grid">
+      <div>
+        <div class="section-label">// Return Calculator</div>
+        <h2 class="section-title">See exactly what you'd earn.</h2>
+        <p class="muted" style="margin-bottom:16px;">Put $50 into a $10K campaign that generates $30K in sales. You own 0.5% of the pool. The consumer pool (25% of profit) is $5,000. Your share: <strong style="color:var(--green)">$25 — a 50% return.</strong></p>
+        <p class="muted">Every payout is calculated by the same transparent formula, automatically, with no manual steps for you or the brand.</p>
+      </div>
+      <div class="calc-box">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+          <div style="font-size:14px;font-weight:600;">Return Calculator</div>
+          <div style="display:flex;align-items:center;gap:5px;font-family:var(--mono);font-size:10px;color:var(--green);letter-spacing:0.8px;text-transform:uppercase;"><div style="width:5px;height:5px;border-radius:50%;background:var(--green);animation:blink 1s infinite;"></div>Live</div>
+        </div>
+        <div class="calc-row"><label>Your Investment</label><div class="inp-wrap"><span class="prefix">$</span><input type="number" id="cInvest" value="50" min="10" oninput="recalc()"></div></div>
+        <div class="calc-row"><label>Total Pool Size</label><div class="inp-wrap"><span class="prefix">$</span><input type="number" id="cPool" value="10000" oninput="recalc()"></div></div>
+        <div class="calc-row"><label>Campaign Revenue</label><div class="inp-wrap"><span class="prefix">$</span><input type="number" id="cRevenue" value="30000" oninput="recalc()"></div></div>
+        <div class="calc-hr"></div>
+        <div class="calc-result-row"><span>Your pool share</span><span class="c-mono" id="cShare">0.50%</span></div>
+        <div class="calc-result-row"><span>Consumer pool (25%)</span><span class="c-mono" id="cPool2">$5,000</span></div>
+        <div class="calc-result-row big"><span>Your payout</span><span class="c-mono c-blue" id="cPayout">$25.00</span></div>
+        <div class="calc-result-row"><span>Return on investment</span><span class="c-mono c-green" id="cROI">+50.0%</span></div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- CTA -->
+
+  <div class="cta-band">
+    <h2>The ad market is <span>yours now.</span></h2>
+    <p>Join thousands already earning returns on real ad campaigns.</p>
+    <div class="cta-row">
+      <input class="cta-input" type="email" id="waitlistEmail" placeholder="your@email.com">
+      <button class="btn btn-blue btn-lg" onclick="joinWaitlist()">Join Waitlist</button>
+    </div>
+    <div id="waitlistMsg" style="margin-top:12px;font-family:var(--mono);font-size:12px;color:var(--green);"></div>
+  </div>
+
+  <footer>
+    <div><div class="footer-brand">AdPool</div><div class="footer-tag">Fund Ads. Earn Returns.</div></div>
+    <div class="footer-col"><a onclick="showPage('market')">Markets</a><a onclick="showPage('brands')">For Brands</a><a onclick="showPage('hiw')">How It Works</a></div>
+    <div class="footer-col"><a>Privacy Policy</a><a>Terms of Service</a><a>Contact</a></div>
+    <div class="footer-copy">© 2026 AdPool Inc.<br>Not financial advice.<br>Returns not guaranteed.</div>
+  </footer>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+
+<!--  MARKETPLACE                          -->
+
+<!-- ═══════════════════════════════════════ -->
+
+<div id="page-market" class="page">
+  <div class="ticker-bar" style="margin-top:60px;">
+    <div class="ticker-track">
+      <div class="ticker-item"><span class="t-name">TERRA APPAREL</span><span class="t-sep">·</span><span class="t-up">▲ 31.0%</span><span class="t-sep">·</span>$22,100 pooled · 3d to launch</div>
+      <div class="ticker-item"><span class="t-name">KIRA BEAUTY</span><span class="t-sep">·</span><span class="t-up">▲ 27.8%</span><span class="t-sep">·</span>$19,600 pooled · 2d to launch</div>
+      <div class="ticker-item"><span class="t-name">NOVA SKIN</span><span class="t-sep">·</span><span class="t-up">▲ 22.4%</span><span class="t-sep">·</span>$14,200 pooled · 3d left</div>
+      <div class="ticker-item"><span class="t-name">FLUX COFFEE</span><span class="t-sep">·</span><span class="t-up">▲ 18.1%</span><span class="t-sep">·</span>$8,500 pooled · 7d left</div>
+      <div class="ticker-item"><span class="t-name">BOLT TECH</span><span class="t-sep">·</span><span class="t-down">▼ 4.2%</span><span class="t-sep">·</span>$5,800 pooled · 12d left</div>
+      <div class="ticker-item"><span class="t-name">TERRA APPAREL</span><span class="t-sep">·</span><span class="t-up">▲ 31.0%</span><span class="t-sep">·</span>$22,100 pooled · 3d to launch</div>
+      <div class="ticker-item"><span class="t-name">KIRA BEAUTY</span><span class="t-sep">·</span><span class="t-up">▲ 27.8%</span><span class="t-sep">·</span>$19,600 pooled · 2d to launch</div>
+      <div class="ticker-item"><span class="t-name">NOVA SKIN</span><span class="t-sep">·</span><span class="t-up">▲ 22.4%</span><span class="t-sep">·</span>$14,200 pooled · 3d left</div>
+      <div class="ticker-item"><span class="t-name">FLUX COFFEE</span><span class="t-sep">·</span><span class="t-up">▲ 18.1%</span><span class="t-sep">·</span>$8,500 pooled · 7d left</div>
+      <div class="ticker-item"><span class="t-name">BOLT TECH</span><span class="t-sep">·</span><span class="t-down">▼ 4.2%</span><span class="t-sep">·</span>$5,800 pooled · 12d left</div>
+    </div>
+  </div>
+  <div class="market-header">
+    <div class="section-label">// Live Markets</div>
+    <h1 style="font-size:clamp(28px,4vw,44px);font-weight:700;letter-spacing:-1.5px;margin-bottom:6px;">Active Campaigns</h1>
+    <p class="muted" style="margin-bottom:24px;">Fund live ad campaigns from vetted brands. Earn proportional returns on every attributed sale.</p>
+    <div class="premium-banner">
+      <div class="pb-text"><h4>⭐ AdPool Premium — 48hr Early Access</h4><p>Premium members see new campaigns before public release. Best campaigns fill up within hours.</p></div>
+      <button class="btn btn-blue" onclick="openModal('signupModal')">Upgrade — $19/mo</button>
+    </div>
+    <div class="filters" id="marketFilters">
+      <button class="filter-chip active" onclick="setFilter('All',this)">All</button>
+      <button class="filter-chip" onclick="setFilter('Sustainable Fashion',this)">Fashion</button>
+      <button class="filter-chip" onclick="setFilter('Food & Beverage',this)">Food & Bev</button>
+      <button class="filter-chip" onclick="setFilter('Beauty & Wellness',this)">Beauty</button>
+      <button class="filter-chip" onclick="setFilter('Consumer Electronics',this)">Electronics</button>
+      <button class="filter-chip" onclick="setFilter('Sports & Fitness',this)">Sports</button>
+      <button class="filter-chip" onclick="setFilter('Home & Living',this)">Home</button>
+    </div>
+    <div class="sort-bar">
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+        <div class="search-wrap"><span class="search-ico">🔍</span><input class="search-input" type="text" id="mktSearch" placeholder="Search campaigns..." oninput="renderMarket()"></div>
+        <span class="count-label" id="mktCount">9 campaigns</span>
+      </div>
+      <select id="mktSort" onchange="renderMarket()" style="font-family:var(--mono);">
+        <option value="popular">Most Popular</option>
+        <option value="roi">Highest ROI</option>
+        <option value="closing">Closing Soonest</option>
+        <option value="newest">Newest</option>
+      </select>
+    </div>
+    <div class="campaigns-grid" id="mktGrid"></div>
+  </div>
+
+  <footer style="margin-top:48px;">
+    <div><div class="footer-brand">AdPool</div><div class="footer-tag">Fund Ads. Earn Returns.</div></div>
+    <div class="footer-col"><a onclick="showPage('home')">Home</a><a onclick="showPage('brands')">For Brands</a><a onclick="showPage('hiw')">How It Works</a></div>
+    <div class="footer-col"><a>Privacy</a><a>Terms</a><a>Contact</a></div>
+    <div class="footer-copy">© 2026 AdPool Inc.<br>Returns not guaranteed.</div>
+  </footer>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+
+<!--  FOR BRANDS                           -->
+
+<!-- ═══════════════════════════════════════ -->
+
+<div id="page-brands" class="page">
+  <div class="hero" style="min-height:65vh;margin-top:60px;">
+    <div class="hero-chip">For Brands & Small Businesses</div>
+    <h1>More budget.<br><span>Zero upfront risk.</span></h1>
+    <p class="hero-sub">Post the campaign you were already planning to run. AdPool's investors co-fund your ad spend. You only pay a performance fee on sales actually generated.</p>
+    <div class="hero-btns">
+      <button class="btn btn-blue btn-lg" onclick="document.getElementById('brandFormSection').scrollIntoView({behavior:'smooth'})">List Campaign Free</button>
+      <button class="btn btn-ghost btn-lg" onclick="showPage('hiw')">How It Works →</button>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- Benefits -->
+
+  <div class="section">
+    <div class="section-label">// Why AdPool</div>
+    <h2 class="section-title">Built for brands that want more.</h2>
+    <div class="benefit-grid">
+      <div class="benefit-card"><div class="benefit-ico">💰</div><div class="benefit-title">More Ad Budget</div><p class="benefit-desc">Run campaigns larger than your own budget allows. The investor community adds capital so your ads reach further.</p></div>
+      <div class="benefit-card"><div class="benefit-ico">🛡️</div><div class="benefit-title">Zero Upfront Cost</div><p class="benefit-desc">You never pay platform fees upfront. AdPool's 10% is taken automatically from performance. If no sales, no extra charge.</p></div>
+      <div class="benefit-card"><div class="benefit-ico">🔗</div><div class="benefit-title">Plug & Play Tracking</div><p class="benefit-desc">AdPool auto-generates your UTM link and connects to Meta, TikTok, and Google APIs. No spreadsheets needed.</p></div>
+      <div class="benefit-card"><div class="benefit-ico">📊</div><div class="benefit-title">Real-Time Analytics</div><p class="benefit-desc">Your brand dashboard shows live campaign performance, attribution data, and projected payouts — updated hourly.</p></div>
+      <div class="benefit-card"><div class="benefit-ico">🧑‍🤝‍🧑</div><div class="benefit-title">Invested Audience</div><p class="benefit-desc">Your investors are financially motivated for your campaign to win. Many share and promote campaigns they've funded.</p></div>
+      <div class="benefit-card"><div class="benefit-ico">⚡</div><div class="benefit-title">24hr Approval</div><p class="benefit-desc">Submit your campaign and get approved within 24 hours. Once live, your pool starts filling from our active investor base.</p></div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- Revenue split -->
+
+  <div class="section">
+    <div class="calc-grid">
+      <div>
+        <div class="section-label">// Revenue Split</div>
+        <h2 class="section-title">You keep the majority. Always.</h2>
+        <p class="muted" style="margin-bottom:20px;">When your campaign closes, profit above your ad spend is split transparently. You keep 60%. Investors share 25%. AdPool takes 10%. A 5% reserve handles edge cases.</p>
+        <div class="split-bar" id="splitBar">
+          <div class="split-seg" style="width:60%;background:var(--blue);"></div>
+          <div class="split-seg" style="width:25%;background:var(--green);"></div>
+          <div class="split-seg" style="width:10%;background:var(--text3);"></div>
+          <div class="split-seg" style="width:5%;background:var(--surface3);border:1px solid var(--border);"></div>
+        </div>
+        <div class="split-legend">
+          <div class="legend-item"><div class="legend-dot" style="background:var(--blue);"></div>You keep 60%</div>
+          <div class="legend-item"><div class="legend-dot" style="background:var(--green);"></div>Investors 25%</div>
+          <div class="legend-item"><div class="legend-dot" style="background:var(--text3);"></div>AdPool 10%</div>
+          <div class="legend-item"><div class="legend-dot" style="background:var(--border2);border:1px solid var(--border);"></div>Reserve 5%</div>
+        </div>
+      </div>
+      <div class="calc-box">
+        <div style="font-size:14px;font-weight:600;margin-bottom:20px;">Example: $10K Campaign</div>
+        <div class="math-rows">
+          <div class="math-row"><span>Ad Spend (investor funded)</span><span>$10,000</span></div>
+          <div class="math-row"><span>Revenue Generated</span><span>$30,000</span></div>
+          <div class="math-row"><span>Profit Above Spend</span><span class="up">$20,000</span></div>
+          <div style="height:1px;background:var(--border);margin:4px 0;"></div>
+          <div class="math-row"><span>You Keep (60%)</span><span style="color:var(--blue-light);">$12,000</span></div>
+          <div class="math-row"><span>Investors Pool (25%)</span><span>$5,000</span></div>
+          <div class="math-row"><span>AdPool Fee (10%)</span><span>$2,000</span></div>
+          <div class="math-row highlight"><span>Your Net Profit</span><span>$12,000</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- Brand form -->
+
+  <div class="section" id="brandFormSection">
+    <div class="section-label">// List Your Campaign</div>
+    <h2 class="section-title">Submit your campaign</h2>
+    <div class="form-card">
+      <div class="form-section-hd">Brand Information</div>
+      <div class="fg-grid">
+        <div class="fg"><label>Brand Name *</label><input class="fi" type="text" id="bName" placeholder="e.g. Terra Apparel"></div>
+        <div class="fg"><label>Category *</label>
+          <select class="fi" id="bCat">
+            <option value="">Select...</option>
+            <option>Sustainable Fashion</option><option>Food & Beverage</option>
+            <option>Beauty & Wellness</option><option>Consumer Electronics</option>
+            <option>Sports & Fitness</option><option>Home & Living</option><option>Other</option>
+          </select>
+        </div>
+      </div>
+      <div class="fg"><label>Website URL *</label><input class="fi" type="url" id="bWebsite" placeholder="https://yourbrand.com"></div>
+      <div class="fg"><label>Campaign Description *</label><textarea class="fi" id="bDesc" placeholder="Target audience, historical ROAS, campaign goal..."></textarea></div>
+
+```
+  <div class="form-section-hd" style="margin-top:24px;">Campaign Details</div>
+  <div class="fg-grid">
+    <div class="fg">
+      <label>Ad Spend Budget *</label>
+      <div class="inp-wrap"><span class="prefix">$</span><input class="fi" style="padding-left:26px;" type="number" id="bSpend" placeholder="5000" min="500"></div>
+      <div class="fg-hint">Min $500 · funded by investors</div>
+    </div>
+    <div class="fg"><label>Ad Platform *</label>
+      <select class="fi" id="bPlatform">
+        <option value="">Select...</option>
+        <option>Meta (Facebook/Instagram)</option>
+        <option>TikTok</option><option>Google Ads</option>
+        <option>YouTube</option><option>Pinterest</option>
+      </select>
+    </div>
+    <div class="fg"><label>Campaign Launch Date *</label><input class="fi" type="date" id="bLaunch"><div class="fg-hint">Funding closes on this date</div></div>
+    <div class="fg"><label>Campaign Duration (days) *</label><input class="fi" type="number" id="bDuration" placeholder="14" min="7" max="90"></div>
+  </div>
+  <div class="fg">
+    <label>Revenue Share % for Investors *</label>
+    <div class="inp-wrap"><input class="fi" style="padding-right:30px;" type="number" id="bRevShare" placeholder="12" min="5" max="30"><span style="position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--text3);font-family:var(--mono);font-size:13px;">%</span></div>
+    <div class="fg-hint">Recommended 8–15%. Higher share fills pools faster.</div>
+  </div>
+
+  <div class="split-preview">
+    <span>You keep: <strong>60%</strong> of profit</span>
+    <span>Investors: <strong>25%</strong> of profit</span>
+    <span>AdPool: <strong>10%</strong> platform fee</span>
+    <span>Reserve: <strong>5%</strong> escrow</span>
+  </div>
+
+  <button class="btn btn-blue btn-full btn-lg" onclick="submitBrand()">Submit Campaign for Review</button>
+  <p style="font-size:11px;color:var(--text3);text-align:center;margin-top:10px;font-family:var(--mono);">Reviewed within 24hrs. No payment until campaign goes live.</p>
+</div>
+```
+
+  </div>
+
+  <footer>
+    <div><div class="footer-brand">AdPool</div><div class="footer-tag">Fund Ads. Earn Returns.</div></div>
+    <div class="footer-col"><a onclick="showPage('home')">Home</a><a onclick="showPage('market')">Markets</a><a onclick="showPage('hiw')">How It Works</a></div>
+    <div class="footer-col"><a>Privacy</a><a>Terms</a><a>Contact</a></div>
+    <div class="footer-copy">© 2026 AdPool Inc.<br>Returns not guaranteed.</div>
+  </footer>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+
+<!--  HOW IT WORKS                         -->
+
+<!-- ═══════════════════════════════════════ -->
+
+<div id="page-hiw" class="page">
+  <div style="max-width:820px;margin:0 auto;padding:80px 24px 80px;position:relative;z-index:1;">
+    <div class="section-label">// How It Works</div>
+    <h1 style="font-size:clamp(30px,4vw,50px);font-weight:700;letter-spacing:-1.5px;margin-bottom:8px;">Everything you need to know.</h1>
+    <p class="muted" style="max-width:500px;margin-bottom:48px;">A complete breakdown of how campaigns work, how payouts are calculated, and how tracking is automated — for investors and brands.</p>
+
+```
+<div class="section-label" style="margin-bottom:14px;">// For Investors</div>
+<h2 style="font-size:24px;font-weight:700;letter-spacing:-0.8px;margin-bottom:24px;">How investing works</h2>
+<div class="hiw-steps">
+  <div class="hiw-step"><div class="hiw-num">01</div><div><div class="hiw-title">Create a free account</div><p class="hiw-desc">Sign up in under 2 minutes. No credit card required. Browse all live campaigns before depositing a dollar.</p></div></div>
+  <div class="hiw-step"><div class="hiw-num">02</div><div><div class="hiw-title">Browse live campaigns</div><p class="hiw-desc">Each campaign shows projected ROI based on the brand's historical ROAS, total pool size, platform, duration, and the exact revenue share percentage offered to investors. Premium subscribers see campaigns 48 hours before public release.</p></div></div>
+  <div class="hiw-step"><div class="hiw-num">03</div><div><div class="hiw-title">Fund a campaign</div><p class="hiw-desc">Invest as little as $10 into any campaign's pool. Funds are held via Stripe until the launch date. If a campaign doesn't hit its funding target, your money is returned in full automatically.</p></div></div>
+  <div class="hiw-step"><div class="hiw-num">04</div><div><div class="hiw-title">Watch it run</div><p class="hiw-desc">Your dashboard shows real-time campaign performance. Every sale tracked through the campaign's auto-generated link appears as it happens. Running totals, current earned amount, and estimated payout — all live.</p></div></div>
+  <div class="hiw-step"><div class="hiw-num">05</div><div><div class="hiw-title">Automatic payout</div><p class="hiw-desc">When the campaign closes, AdPool calculates your share of the consumer pool (25% of total profit, proportional to your contribution) and deposits it to your wallet automatically. No action needed.</p></div></div>
+</div>
+
+<div style="margin:48px 0;">
+  <div class="section-label" style="margin-bottom:14px;">// The Math</div>
+  <h2 style="font-size:24px;font-weight:700;letter-spacing:-0.8px;margin-bottom:16px;">How payouts are calculated</h2>
+  <p class="muted" style="margin-bottom:24px;">A $50 investment in a $10K campaign that generates $30K in sales:</p>
+  <div class="math-rows">
+    <div class="math-row"><span>Your investment</span><span>$50</span></div>
+    <div class="math-row"><span>Total pool size</span><span>$10,000</span></div>
+    <div class="math-row"><span>Your pool share</span><span>0.50%</span></div>
+    <div class="math-row"><span>Total revenue generated</span><span>$30,000</span></div>
+    <div class="math-row"><span>Profit (revenue − ad spend)</span><span class="up">$20,000</span></div>
+    <div class="math-row"><span>Consumer pool (25% of profit)</span><span>$5,000</span></div>
+    <div class="math-row highlight"><span>Your payout (0.5% of $5,000)</span><span>$25.00 (+50% ROI)</span></div>
+  </div>
+</div>
+
+<div style="margin:48px 0;">
+  <div class="section-label" style="margin-bottom:14px;">// Attribution</div>
+  <h2 style="font-size:24px;font-weight:700;letter-spacing:-0.8px;margin-bottom:16px;">Plug & play tracking</h2>
+  <div class="benefit-grid" style="margin-top:0;">
+    <div class="benefit-card"><div class="benefit-ico">🔗</div><div class="benefit-title">Auto-Generated UTM Links</div><p class="benefit-desc">When a campaign is approved, AdPool automatically generates a unique UTM tracking link. Every click and purchase through that link is attributed to the campaign.</p></div>
+    <div class="benefit-card"><div class="benefit-ico">📡</div><div class="benefit-title">Direct API Integration</div><p class="benefit-desc">AdPool connects directly to Meta's Conversions API, TikTok's Events API, and Google Analytics 4. No self-reporting by brands — the platform reads from the ad network directly.</p></div>
+    <div class="benefit-card"><div class="benefit-ico">⚡</div><div class="benefit-title">Real-Time Updates</div><p class="benefit-desc">Sale data syncs to your dashboard hourly. You see every attributed sale as it happens, with running totals and projected payout estimates live.</p></div>
+    <div class="benefit-card"><div class="benefit-ico">🔒</div><div class="benefit-title">Automatic Payouts</div><p class="benefit-desc">When a campaign closes, the platform calculates every investor's share and deposits payouts to their AdPool wallet. Fully automated — no manual steps.</p></div>
+    <div class="benefit-card"><div class="benefit-ico">⭐</div><div class="benefit-title">Premium — $19/mo</div><p class="benefit-desc">48hr early access to every new campaign before public release. Best campaigns fill up in hours — early access is the real edge.</p></div>
+    <div class="benefit-card"><div class="benefit-ico">⚖️</div><div class="benefit-title">Legal Structure</div><p class="benefit-desc">AdPool structures all participation as revenue-sharing agreements, not equity or securities. Similar to affiliate marketing programs — you're in a performance-based revenue share.</p></div>
+  </div>
+</div>
+
+<!-- FAQ -->
+<div class="section-label" style="margin-bottom:14px;">// FAQ</div>
+<h2 style="font-size:24px;font-weight:700;letter-spacing:-0.8px;margin-bottom:24px;">Common questions</h2>
+<div id="faqList"></div>
+```
+
+  </div>
+
+  <div class="cta-band">
+    <h2>Ready to start? <span>It's free.</span></h2>
+    <p>Create an account and browse live campaigns in under 2 minutes.</p>
+    <button class="btn btn-blue btn-lg" onclick="openModal('signupModal')">Create Free Account →</button>
+  </div>
+
+  <footer>
+    <div><div class="footer-brand">AdPool</div><div class="footer-tag">Fund Ads. Earn Returns.</div></div>
+    <div class="footer-col"><a onclick="showPage('home')">Home</a><a onclick="showPage('market')">Markets</a><a onclick="showPage('brands')">For Brands</a></div>
+    <div class="footer-col"><a>Privacy</a><a>Terms</a><a>Contact</a></div>
+    <div class="footer-copy">© 2026 AdPool Inc.<br>Returns not guaranteed.</div>
+  </footer>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+
+<!--  DASHBOARD                            -->
+
+<!-- ═══════════════════════════════════════ -->
+
+<div id="page-dash" class="page">
+  <div class="dash-layout">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="wallet">
+        <div class="wallet-lbl">Available Balance</div>
+        <div class="wallet-bal" id="wBal">$0.00</div>
+        <div class="wallet-btns">
+          <button class="wallet-btn" onclick="showToast('Deposit via Stripe — coming soon!','ok')">+ Deposit</button>
+          <button class="wallet-btn" onclick="showToast('Withdraw to bank — coming soon!','ok')">Withdraw</button>
+        </div>
+      </div>
+      <div class="sb-label">Navigation</div>
+      <div class="sb-nav">
+        <button class="sb-link active" onclick="showDashSection('portfolio',this)">📊 Portfolio</button>
+        <button class="sb-link" onclick="showDashSection('activity',this)">⚡ Activity</button>
+        <button class="sb-link" onclick="showPage('market')">🎯 Find Campaigns</button>
+        <button class="sb-link" onclick="showPage('brands')">🏢 List a Brand</button>
+        <button class="sb-link" onclick="handleLogout()">→ Log Out</button>
+      </div>
+      <div class="sb-label">Performance</div>
+      <div class="sb-perf">
+        <div class="sb-perf-row"><span>Avg. ROI</span><span class="sb-perf-val up">+26.1%</span></div>
+        <div class="sb-perf-row"><span>Win Rate</span><span class="sb-perf-val">83%</span></div>
+        <div class="sb-perf-row"><span>Best Return</span><span class="sb-perf-val up">+47%</span></div>
+        <div class="sb-perf-row"><span>Active</span><span class="sb-perf-val" id="sbActive">3</span></div>
+      </div>
+    </div>
+
+```
+<!-- Main -->
+<div class="dash-main">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px;">
+    <div>
+      <div style="font-size:12px;color:var(--text3);font-family:var(--mono);margin-bottom:4px;">DASHBOARD</div>
+      <h1 style="font-size:24px;font-weight:700;letter-spacing:-0.5px;">Welcome back, <span style="color:var(--blue-light);" id="dashGreet">Investor</span></h1>
+    </div>
+    <button class="btn btn-blue" onclick="showPage('market')">+ Fund Campaign</button>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-card"><div class="sc-label">Balance</div><div class="sc-val" id="dBal">$0</div><div class="sc-sub up">Available</div></div>
+    <div class="stat-card"><div class="sc-label">Invested</div><div class="sc-val" id="dInvested">$0</div><div class="sc-sub">Total deployed</div></div>
+    <div class="stat-card"><div class="sc-label">Earned</div><div class="sc-val" style="color:var(--green);" id="dEarned">$0</div><div class="sc-sub up">All-time returns</div></div>
+    <div class="stat-card"><div class="sc-label">Campaigns</div><div class="sc-val" id="dCamp">0</div><div class="sc-sub">Active positions</div></div>
+  </div>
+
+  <div class="premium-banner">
+    <div class="pb-text"><h4>⭐ Upgrade to Premium</h4><p>Get 48hr early access to new campaigns before the public. Best ROIs fill fast.</p></div>
+    <button class="btn btn-blue" onclick="showToast('Premium subscription coming soon!','ok')">$19/mo →</button>
+  </div>
+
+  <!-- Portfolio -->
+  <div id="dash-portfolio">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+      <div style="font-size:15px;font-weight:600;">My Portfolio</div>
+      <button class="btn btn-ghost" style="font-size:11px;padding:5px 12px;" onclick="showPage('market')">+ Add Position</button>
+    </div>
+    <div class="table-wrap">
+      <div class="table-head"><span class="th">Campaign</span><span class="th">Invested</span><span class="th">Est. Return</span><span class="th">Launch</span><span class="th">Status</span></div>
+      <div id="portfolioRows"></div>
+    </div>
+  </div>
+
+  <!-- Activity -->
+  <div id="dash-activity" style="display:none;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+      <div style="font-size:15px;font-weight:600;">Recent Activity</div>
+      <div style="display:flex;align-items:center;gap:5px;font-family:var(--mono);font-size:10px;color:var(--green);letter-spacing:0.8px;text-transform:uppercase;"><div style="width:5px;height:5px;border-radius:50%;background:var(--green);animation:blink 1s infinite;"></div>Live</div>
+    </div>
+    <div class="activity-wrap" id="activityRows"></div>
+  </div>
+</div>
+```
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+
+<!--  MODALS                               -->
+
+<!-- ═══════════════════════════════════════ -->
+
+<div class="overlay" id="loginModal" onclick="outsideClose(event,'loginModal')">
+  <div class="modal">
+    <button class="modal-x" onclick="closeModal('loginModal')">×</button>
+    <div class="modal-logo"><div class="nav-dot"></div>AdPool</div>
+    <div class="modal-title">Welcome back</div>
+    <div class="modal-sub">Log in to your AdPool account</div>
+    <div class="mg"><label>Email</label><input class="mi" type="email" id="liEmail" placeholder="your@email.com"></div>
+    <div class="mg"><label>Password</label><input class="mi" type="password" id="liPass" placeholder="••••••••"></div>
+    <button class="btn btn-blue btn-full" onclick="doLogin()">Log In</button>
+    <div class="modal-switch">No account? <a onclick="switchModal('loginModal','signupModal')">Sign up free</a></div>
+  </div>
+</div>
+
+<div class="overlay" id="signupModal" onclick="outsideClose(event,'signupModal')">
+  <div class="modal">
+    <button class="modal-x" onclick="closeModal('signupModal')">×</button>
+    <div class="modal-logo"><div class="nav-dot"></div>AdPool</div>
+    <div class="modal-title">Create account</div>
+    <div class="modal-sub">Start investing in ad campaigns today</div>
+    <div class="form-row">
+      <div class="mg"><label>First Name</label><input class="mi" type="text" id="suFirst" placeholder="John"></div>
+      <div class="mg"><label>Last Name</label><input class="mi" type="text" id="suLast" placeholder="Doe"></div>
+    </div>
+    <div class="mg"><label>Email</label><input class="mi" type="email" id="suEmail" placeholder="your@email.com"></div>
+    <div class="mg"><label>Password</label><input class="mi" type="password" id="suPass" placeholder="Min 8 characters"></div>
+    <div class="mg"><label>I am a...</label>
+      <select class="mi" id="suRole">
+        <option value="investor">Investor — I want to fund campaigns</option>
+        <option value="brand">Brand — I want to list campaigns</option>
+      </select>
+    </div>
+    <button class="btn btn-blue btn-full" onclick="doSignup()">Create Account</button>
+    <div class="modal-switch">Have an account? <a onclick="switchModal('signupModal','loginModal')">Log in</a></div>
+  </div>
+</div>
+
+<div class="overlay" id="fundModal" onclick="outsideClose(event,'fundModal')">
+  <div class="modal">
+    <button class="modal-x" onclick="closeModal('fundModal')">×</button>
+    <div class="modal-title" id="fmTitle">Fund Campaign</div>
+    <div class="modal-sub" id="fmSub"></div>
+    <div class="fund-preview-box" id="fmPreview"></div>
+    <div class="mg"><label>Investment Amount</label><div class="inp-wrap"><span class="prefix">$</span><input class="mi" style="padding-left:26px;" type="number" id="fmAmt" value="50" min="10" oninput="updateFund()"></div></div>
+    <div class="quick-amts">
+      <button class="qa-btn" onclick="setAmt(10)">$10</button>
+      <button class="qa-btn" onclick="setAmt(25)">$25</button>
+      <button class="qa-btn" onclick="setAmt(50)">$50</button>
+      <button class="qa-btn" onclick="setAmt(100)">$100</button>
+      <button class="qa-btn" onclick="setAmt(250)">$250</button>
+    </div>
+    <div class="fund-breakdown" id="fmBreak"></div>
+    <button class="btn btn-blue btn-full" onclick="confirmFund()">Confirm Investment</button>
+    <p style="font-size:11px;color:var(--text3);text-align:center;margin-top:10px;font-family:var(--mono);">Powered by Stripe. Funds held until campaign launch date.</p>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ════════════════════════════════════
+//  DATA
+// ════════════════════════════════════
+const CAMPAIGNS = [
+  { id:'C1', brand:'Terra Apparel', cat:'Sustainable Fashion', icon:'🌿', bg:'#0a1a0a', pooled:22100, cap:25000, spend:10000, revShare:12, roi:31, dur:14, days:3, platform:'Meta', premium:false },
+  { id:'C2', brand:'Flux Coffee', cat:'Food & Beverage', icon:'☕', bg:'#0a0a1a', pooled:8500, cap:15000, spend:8000, revShare:9, roi:18, dur:7, days:7, platform:'TikTok', premium:false },
+  { id:'C3', brand:'Kira Beauty', cat:'Beauty & Wellness', icon:'✨', bg:'#1a0a16', pooled:19600, cap:27000, spend:12000, revShare:14, roi:28, dur:21, days:2, platform:'Meta', premium:true },
+  { id:'C4', brand:'Bolt Tech', cat:'Consumer Electronics', icon:'⚡', bg:'#1a1a0a', pooled:5800, cap:20000, spend:15000, revShare:8, roi:14, dur:30, days:12, platform:'Google', premium:false },
+  { id:'C5', brand:'Mesa Foods', cat:'Food & Beverage', icon:'🌮', bg:'#1a0e0a', pooled:11300, cap:18000, spend:9000, revShare:11, roi:22, dur:10, days:5, platform:'Meta', premium:false },
+  { id:'C6', brand:'Axis Sports', cat:'Sports & Fitness', icon:'🏋️', bg:'#0a111a', pooled:7200, cap:12000, spend:6000, revShare:10, roi:19, dur:14, days:9, platform:'TikTok', premium:true },
+  { id:'C7', brand:'Nova Skin', cat:'Beauty & Wellness', icon:'💎', bg:'#0e0a1a', pooled:14200, cap:20000, spend:10000, revShare:13, roi:25, dur:14, days:3, platform:'Meta', premium:false },
+  { id:'C8', brand:'Crest Home', cat:'Home & Living', icon:'🏠', bg:'#1a0a0a', pooled:3200, cap:10000, spend:5000, revShare:10, roi:16, dur:21, days:18, platform:'Google', premium:false },
+  { id:'C9', brand:'Drift Audio', cat:'Consumer Electronics', icon:'🎧', bg:'#0a161a', pooled:0, cap:30000, spend:20000, revShare:15, roi:35, dur:30, days:25, platform:'Meta', premium:true }
+];
+
+const FAQS = [
+  { q:'Is my money safe?', a:'All funds are processed and held by Stripe, one of the world\'s most trusted payment processors. Funds sit in escrow until the campaign launches. If a campaign doesn\'t reach its funding target, your money is returned in full automatically.' },
+  { q:'What if a campaign generates no sales?', a:'If a campaign generates zero sales, you receive no return but do not lose more than your investment. The 5% reserve fund covers platform edge cases. AdPool only makes money when campaigns succeed, so our incentives are fully aligned with yours.' },
+  { q:'How is projected ROI calculated?', a:'Projected ROI is based on the brand\'s historical ROAS on similar campaigns on the same platform. It is a projection, not a guarantee. We display historical performance data to help you make informed decisions.' },
+  { q:'Can I withdraw mid-campaign?', a:'Funds are committed on investment and held until campaign close. You cannot withdraw mid-campaign. A secondary market for trading campaign stakes is on the product roadmap.' },
+  { q:'How does attribution work technically?', a:'AdPool integrates directly with Meta\'s Conversions API, TikTok\'s Events API, and Google Analytics 4. When a campaign is approved, a unique UTM link is auto-generated. Every sale through that link is verified against the ad platform\'s API — brands cannot self-report.' },
+  { q:'What is the minimum investment?', a:'$10 per campaign. No maximum. You can invest in as many campaigns as you want simultaneously.' },
+  { q:'How do I get paid?', a:'When a campaign closes, your payout is automatically calculated and deposited to your AdPool wallet. Withdraw to your bank via Stripe anytime. Withdrawals typically process within 2–3 business days.' },
+  { q:'Is AdPool a registered investment platform?', a:'AdPool structures all investor participation as revenue-sharing agreements, not equity or securities — similar to affiliate marketing. We recommend consulting a financial advisor for your specific situation.' }
+];
+
+// ════════════════════════════════════
+//  STATE
+// ════════════════════════════════════
+let user = null;
+let filterCat = 'All';
+let activeCamp = null;
+
+try { user = JSON.parse(localStorage.getItem('ap_user')); } catch(e) {}
+
+// ════════════════════════════════════
+//  NAVIGATION
+// ════════════════════════════════════
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  const tabMap = { home:0, market:1, brands:2, hiw:3, dash:4 };
+  const tabs = document.querySelectorAll('.nav-tab');
+  if (tabMap[id] !== undefined && tabs[tabMap[id]]) tabs[tabMap[id]].classList.add('active');
+  window.scrollTo(0, 0);
+  if (id === 'market') renderMarket();
+  if (id === 'dash') renderDash();
+  if (id === 'home') { renderHome(); recalc(); }
+  if (id === 'hiw') renderFAQ();
+}
+
+// ════════════════════════════════════
+//  CAMPAIGN CARD
+// ════════════════════════════════════
+function pct(c) { return Math.min(100, Math.round((c.pooled / c.cap) * 100)); }
+function fmtCur(n) {
+  if (n >= 1e6) return '$' + (n/1e6).toFixed(1) + 'M';
+  if (n >= 1000) return '$' + (n/1000).toFixed(1) + 'K';
+  return '$' + n.toLocaleString();
+}
+function launchDate(days) {
+  const d = new Date(); d.setDate(d.getDate() + days);
+  return d.toLocaleDateString('en-US', {month:'short', day:'numeric'});
+}
+
+function campCard(c) {
+  const p = pct(c);
+  const urgency = c.days <= 3 ? `<span style="color:var(--red)">⚡ ${c.days}d left</span>` : `${c.days}d to launch`;
+  return `
+  <div class="card ${c.premium ? 'card-premium' : ''}" onclick="openFund('${c.id}')">
+    <div class="card-header">
+      <div class="brand-row">
+        <div class="brand-ico" style="background:${c.bg}">${c.icon}</div>
+        <div>
+          <div class="brand-name">${c.brand}</div>
+          <div class="brand-cat">${c.cat}</div>
+        </div>
+      </div>
+      <div class="roi-pill">+${c.roi}%</div>
+    </div>
+    <div class="prog-wrap">
+      <div class="prog-labels"><span>${fmtCur(c.pooled)} pooled</span><span>${p}%</span></div>
+      <div class="prog-track"><div class="prog-fill" style="width:${p}%"></div></div>
+    </div>
+    <div class="card-meta">
+      <div class="meta-col"><div class="meta-val">${c.dur}d</div><div class="meta-lbl">Duration</div></div>
+      <div class="meta-col"><div class="meta-val">${fmtCur(c.cap)}</div><div class="meta-lbl">Pool Cap</div></div>
+      <div class="meta-col"><div class="meta-val">${c.revShare}%</div><div class="meta-lbl">Rev Share</div></div>
+    </div>
+    <div class="launch-row"><div class="launch-dot"></div>Launches ${launchDate(c.days)} · ${urgency}</div>
+    <button class="fund-btn" onclick="openFund('${c.id}');event.stopPropagation()">Fund This Campaign</button>
+  </div>`;
+}
+
+// ════════════════════════════════════
+//  HOME
+// ════════════════════════════════════
+function renderHome() {
+  const el = document.getElementById('homeCampaigns');
+  if (!el) return;
+  el.innerHTML = CAMPAIGNS.slice(0,3).map(campCard).join('');
+}
+
+// ════════════════════════════════════
+//  MARKETPLACE
+// ════════════════════════════════════
+function setFilter(cat, btn) {
+  filterCat = cat;
+  document.querySelectorAll('.filter-chip').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  renderMarket();
+}
+
+function renderMarket() {
+  let list = [...CAMPAIGNS];
+  if (filterCat !== 'All') list = list.filter(c => c.cat === filterCat);
+  const q = (document.getElementById('mktSearch')?.value || '').toLowerCase();
+  if (q) list = list.filter(c => c.brand.toLowerCase().includes(q) || c.cat.toLowerCase().includes(q));
+  const sort = document.getElementById('mktSort')?.value || 'popular';
+  if (sort === 'roi') list.sort((a,b) => b.roi - a.roi);
+  else if (sort === 'closing') list.sort((a,b) => a.days - b.days);
+  else if (sort === 'newest') list.sort((a,b) => b.days - a.days);
+  else list.sort((a,b) => b.pooled - a.pooled);
+  const el = document.getElementById('mktGrid');
+  const cnt = document.getElementById('mktCount');
+  if (cnt) cnt.textContent = list.length + ' campaigns';
+  if (!el) return;
+  if (!list.length) { el.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--text3);"><div style="font-size:36px;margin-bottom:12px;">🔍</div><div style="font-size:16px;font-weight:600;color:var(--text2);margin-bottom:6px;">No campaigns found</div><div>Try a different filter</div></div>`; return; }
+  el.innerHTML = list.map(campCard).join('');
+}
+
+// ════════════════════════════════════
+//  FUND MODAL
+// ════════════════════════════════════
+function openFund(id) {
+  activeCamp = CAMPAIGNS.find(c => c.id === id);
+  if (!activeCamp) return;
+  const c = activeCamp;
+  document.getElementById('fmTitle').textContent = 'Fund ' + c.brand;
+  document.getElementById('fmSub').textContent = c.cat + ' · ' + c.platform + ' Campaign';
+  document.getElementById('fmPreview').innerHTML = `
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+      <div style="width:36px;height:36px;border-radius:8px;background:${c.bg};display:flex;align-items:center;justify-content:center;font-size:18px;">${c.icon}</div>
+      <div><div style="font-weight:600;font-size:14px;">${c.brand}</div><div style="font-family:var(--mono);font-size:10px;color:var(--text3);">Launches ${launchDate(c.days)}</div></div>
+    </div>
+    <div style="display:flex;gap:16px;flex-wrap:wrap;">
+      <div><div style="font-family:var(--mono);font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:2px;">Proj. ROI</div><div style="color:var(--green);font-weight:600;font-family:var(--mono);">+${c.roi}%</div></div>
+      <div><div style="font-family:var(--mono);font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:2px;">Rev Share</div><div style="font-weight:600;font-family:var(--mono);">${c.revShare}%</div></div>
+      <div><div style="font-family:var(--mono);font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:2px;">Duration</div><div style="font-weight:600;font-family:var(--mono);">${c.dur}d</div></div>
+      <div><div style="font-family:var(--mono);font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:2px;">Filled</div><div style="font-weight:600;font-family:var(--mono);">${pct(c)}%</div></div>
+    </div>`;
+  updateFund();
+  openModal('fundModal');
+}
+
+function updateFund() {
+  if (!activeCamp) return;
+  const c = activeCamp;
+  const amt = parseFloat(document.getElementById('fmAmt')?.value) || 0;
+  const share = amt / c.cap;
+  const estRev = c.spend * (1 + c.roi / 100);
+  const profit = Math.max(0, estRev - c.spend);
+  const pool25 = profit * 0.25;
+  const payout = share * pool25;
+  const roi = amt > 0 ? ((payout / amt) * 100).toFixed(1) : '0.0';
+  const el = document.getElementById('fmBreak');
+  if (el) el.innerHTML = `
+    <div class="fbd-row"><span>Pool share</span><span style="font-family:var(--mono);">${(share*100).toFixed(2)}%</span></div>
+    <div class="fbd-row"><span>Est. campaign revenue</span><span style="font-family:var(--mono);">${fmtCur(Math.round(estRev))}</span></div>
+    <div class="fbd-row"><span>Consumer pool (25%)</span><span style="font-family:var(--mono);">${fmtCur(Math.round(pool25))}</span></div>
+    <div class="fbd-row hl"><span>Est. payout</span><span>+${fmtCur(payout.toFixed(2))} (+${roi}%)</span></div>`;
+}
+
+function setAmt(n) {
+  const el = document.getElementById('fmAmt');
+  if (el) { el.value = n; updateFund(); }
+}
+
+function confirmFund() {
+  if (!user) { closeModal('fundModal'); setTimeout(() => openModal('signupModal'), 150); return; }
+  const amt = parseFloat(document.getElementById('fmAmt')?.value) || 0;
+  if (amt < 10) { showToast('Minimum investment is $10', 'err'); return; }
+  if (!activeCamp) return;
+  user.portfolio = user.portfolio || [];
+  if (!user.portfolio.includes(activeCamp.id)) user.portfolio.push(activeCamp.id);
+  user.invested = (user.invested || 0) + amt;
+  localStorage.setItem('ap_user', JSON.stringify(user));
+  closeModal('fundModal');
+  showToast(`$${amt} invested in ${activeCamp.brand}! 🚀`, 'ok');
+}
+
+// ════════════════════════════════════
+//  CALCULATOR
+// ════════════════════════════════════
+function recalc() {
+  const inv = parseFloat(document.getElementById('cInvest')?.value) || 0;
+  const pool = parseFloat(document.getElementById('cPool')?.value) || 1;
+  const rev = parseFloat(document.getElementById('cRevenue')?.value) || 0;
+  const profit = Math.max(0, rev - pool);
+  const pool25 = profit * 0.25;
+  const share = inv / pool;
+  const payout = share * pool25;
+  const roi = inv > 0 ? ((payout/inv)*100).toFixed(1) : '0.0';
+  const s = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+  s('cShare', (share*100).toFixed(2) + '%');
+  s('cPool2', fmtCur(Math.round(pool25)));
+  s('cPayout', '$' + payout.toFixed(2));
+  s('cROI', (parseFloat(roi) >= 0 ? '+' : '') + roi + '%');
+  const roiEl = document.getElementById('cROI');
+  if (roiEl) roiEl.style.color = parseFloat(roi) >= 0 ? 'var(--green)' : 'var(--red)';
+}
+
+// ════════════════════════════════════
+//  AUTH
+// ════════════════════════════════════
+function doLogin() {
+  const em = document.getElementById('liEmail')?.value;
+  const pw = document.getElementById('liPass')?.value;
+  if (!em || !pw) { showToast('Fill in all fields', 'err'); return; }
+  const firstName = em.split('@')[0].replace(/[^a-zA-Z]/g,'');
+  const u = { email:em, firstName: firstName.charAt(0).toUpperCase()+firstName.slice(1), role:'investor', balance:1250, invested:850, earned:284.17, portfolio:['C1','C2','C3'] };
+  localStorage.setItem('ap_user', JSON.stringify(u));
+  user = u;
+  closeModal('loginModal');
+  updateNavAuth();
+  showToast('Welcome back, ' + u.firstName + '!', 'ok');
+  setTimeout(() => showPage('dash'), 600);
+}
+
+function doSignup() {
+  const first = document.getElementById('suFirst')?.value;
+  const last = document.getElementById('suLast')?.value;
+  const em = document.getElementById('suEmail')?.value;
+  const pw = document.getElementById('suPass')?.value;
+  const role = document.getElementById('suRole')?.value;
+  if (!first || !last || !em || !pw) { showToast('Fill in all fields', 'err'); return; }
+  if (pw.length < 8) { showToast('Password must be 8+ characters', 'err'); return; }
+  const u = { email:em, firstName:first, lastName:last, role, balance:0, invested:0, earned:0, portfolio:[] };
+  localStorage.setItem('ap_user', JSON.stringify(u));
+  user = u;
+  closeModal('signupModal');
+  updateNavAuth();
+  showToast('Welcome to AdPool, ' + first + '! 🎉', 'ok');
+  setTimeout(() => showPage(role === 'brand' ? 'brands' : 'market'), 800);
+}
+
+function handleLogout() {
+  localStorage.removeItem('ap_user');
+  user = null;
+  updateNavAuth();
+  showToast('Logged out', 'ok');
+  showPage('home');
+}
+
+function updateNavAuth() {
+  const nr = document.querySelector('.nav-right');
+  if (!nr) return;
+  if (user) {
+    nr.innerHTML = `<span style="font-family:var(--mono);font-size:11px;color:var(--text3);">Hi, ${user.firstName}</span><button class="btn btn-blue" onclick="showPage('dash')">Dashboard</button><button class="btn btn-ghost" onclick="handleLogout()">Log Out</button>`;
+  } else {
+    nr.innerHTML = `<button class="btn btn-ghost" onclick="openModal('loginModal')">Log In</button><button class="btn btn-blue" onclick="openModal('signupModal')">Get Started</button>`;
+  }
+}
+
+// ════════════════════════════════════
+//  DASHBOARD
+// ════════════════════════════════════
+function renderDash() {
+  const u = user || { firstName:'Guest', balance:0, invested:0, earned:0, portfolio:[] };
+  const s = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+  s('dashGreet', u.firstName || 'Investor');
+  s('wBal', fmtCur(u.balance || 0));
+  s('dBal', fmtCur(u.balance || 0));
+  s('dInvested', fmtCur(u.invested || 0));
+  s('dEarned', fmtCur(u.earned || 0));
+  const portfolio = (u.portfolio?.length ? u.portfolio : ['C1','C2','C3']);
+  s('dCamp', portfolio.length);
+  s('sbActive', portfolio.length);
+
+  const pCamps = CAMPAIGNS.filter(c => portfolio.includes(c.id));
+  const rows = document.getElementById('portfolioRows');
+  if (rows) {
+    if (!pCamps.length) {
+      rows.innerHTML = `<div style="text-align:center;padding:40px 20px;color:var(--text3);"><div style="font-size:30px;margin-bottom:10px;">📊</div><div style="font-weight:600;color:var(--text2);margin-bottom:6px;">No investments yet</div><div style="font-size:12px;">Browse campaigns to make your first investment</div></div>`;
+    } else {
+      rows.innerHTML = pCamps.map(c => `
+        <div class="table-row">
+          <div class="t-brand"><div class="t-ico" style="background:${c.bg}">${c.icon}</div><div><div class="t-bname">${c.brand}</div><div class="t-bcat">${c.cat}</div></div></div>
+          <div class="t-val">$${(Math.random()*150+30).toFixed(0)}</div>
+          <div class="t-val up">+${c.roi}%</div>
+          <div class="t-val">${launchDate(c.days)}</div>
+          <div><span class="badge badge-live">LIVE</span></div>
+        </div>`).join('');
+    }
+  }
+
+  const actEl = document.getElementById('activityRows');
+  if (actEl) {
+    const acts = [
+      { type:'earn', ico:'💰', title:'Terra Apparel payout', time:'2 hrs ago', amt:'+$4.82' },
+      { type:'invest', ico:'📈', title:'Funded Kira Beauty', time:'1 day ago', amt:'-$100.00' },
+      { type:'earn', ico:'💰', title:'Flux Coffee payout', time:'2 days ago', amt:'+$2.31' },
+      { type:'invest', ico:'📈', title:'Funded Terra Apparel', time:'5 days ago', amt:'-$50.00' },
+      { type:'earn', ico:'💰', title:'Kira Beauty payout', time:'1 week ago', amt:'+$7.14' },
+    ];
+    actEl.innerHTML = acts.map(a => `
+      <div class="activity-item">
+        <div class="act-left"><div class="act-ico ${a.type}">${a.ico}</div><div><div class="act-title">${a.title}</div><div class="act-time">${a.time}</div></div></div>
+        <div class="act-amt ${a.type}">${a.amt}</div>
+      </div>`).join('');
+  }
+}
+
+function showDashSection(sec, btn) {
+  document.getElementById('dash-portfolio').style.display = sec === 'portfolio' ? 'block' : 'none';
+  document.getElementById('dash-activity').style.display = sec === 'activity' ? 'block' : 'none';
+  document.querySelectorAll('.sb-link').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+}
+
+// ════════════════════════════════════
+//  FAQ
+// ════════════════════════════════════
+function renderFAQ() {
+  const el = document.getElementById('faqList');
+  if (!el || el.innerHTML) return;
+  el.innerHTML = FAQS.map((f,i) => `
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFAQ(${i})">${f.q}<span class="faq-ico" id="fi${i}">+</span></button>
+      <div class="faq-a" id="fa${i}">${f.a}</div>
+    </div>`).join('');
+}
+
+function toggleFAQ(i) {
+  const a = document.getElementById('fa'+i);
+  const ico = document.getElementById('fi'+i);
+  const open = a.style.display === 'block';
+  a.style.display = open ? 'none' : 'block';
+  ico.textContent = open ? '+' : '×';
+  if (ico) ico.style.transform = open ? '' : 'rotate(45deg)';
+}
+
+// ════════════════════════════════════
+//  BRAND FORM
+// ════════════════════════════════════
+function submitBrand() {
+  const name = document.getElementById('bName')?.value;
+  const spend = document.getElementById('bSpend')?.value;
+  const launch = document.getElementById('bLaunch')?.value;
+  const platform = document.getElementById('bPlatform')?.value;
+  const rev = document.getElementById('bRevShare')?.value;
+  if (!name || !spend || !launch || !platform || !rev) { showToast('Please fill in all required fields', 'err'); return; }
+  showToast(`${name} campaign submitted! Under review within 24hrs.`, 'ok');
+  ['bName','bWebsite','bDesc','bSpend','bRevShare'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+}
+
+// ════════════════════════════════════
+//  WAITLIST
+// ════════════════════════════════════
+function joinWaitlist() {
+  const em = document.getElementById('waitlistEmail')?.value;
+  const msg = document.getElementById('waitlistMsg');
+  if (!em || !em.includes('@')) { if (msg) { msg.textContent = 'Enter a valid email.'; msg.style.color = 'var(--red)'; } return; }
+  if (msg) { msg.textContent = "✓ You're on the list. We'll be in touch."; msg.style.color = 'var(--green)'; }
+  if (document.getElementById('waitlistEmail')) document.getElementById('waitlistEmail').value = '';
+}
+
+// ════════════════════════════════════
+//  MODALS
+// ════════════════════════════════════
+function openModal(id) { document.getElementById(id).classList.add('open'); document.body.style.overflow = 'hidden'; }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); document.body.style.overflow = ''; }
+function outsideClose(e, id) { if (e.target === document.getElementById(id)) closeModal(id); }
+function switchModal(a, b) { closeModal(a); setTimeout(() => openModal(b), 120); }
+
+// ════════════════════════════════════
+//  TOAST
+// ════════════════════════════════════
+function showToast(msg, type='ok') {
+  const t = document.getElementById('toast');
+  if (!t) return;
+  t.textContent = msg;
+  t.className = 'toast show ' + type;
+  clearTimeout(window._toastTimer);
+  window._toastTimer = setTimeout(() => { t.className = 'toast'; }, 3200);
+}
+
+// ════════════════════════════════════
+//  INIT
+// ════════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
+  updateNavAuth();
+  renderHome();
+  recalc();
+  renderFAQ();
+});
+</script>
+
+</body>
+</html>
